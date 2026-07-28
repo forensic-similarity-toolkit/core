@@ -1,5 +1,7 @@
 # FSIS — Forensic Similarity Intelligence System
 
+[![Paper](https://img.shields.io/badge/paper-ESWA%20(in%20review)-blue)](https://doi.org/PLACEHOLDER-UPDATE-ONCE-PUBLISHED)
+
 FSIS is an open-source, browser-based expert system for comparing the chemical
 composition profiles of drug samples and surfacing candidate common-source or
 common-supply relationships as an interactive similarity network.
