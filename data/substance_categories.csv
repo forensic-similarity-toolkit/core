@@ -1,0 +1,17 @@
+Substance,Category,Subcategory,Role,Notes
+Heroin,Active,True Substance,True Substance,
+6-MAM,Active,True Substance,True Substance,Heroin metabolite
+Acetylcodeine,Impurity,Synthesis Impurity,Impurity,
+Cocaine,Active,True Substance,True Substance,
+Levamisole,Adulterant,Adulterant,Adulterant,
+Phenacetin,Adulterant,Adulterant,Adulterant,
+Lidocaine,Adulterant,Adulterant,Adulterant,
+MDMA,Active,True Substance,True Substance,
+Amphetamine,Substitute,Substitute,Substitute,
+Mephedrone,Substitute,Substitute,Substitute,NPS cathinone
+Ketamine,Active,True Substance,True Substance,
+Norketamine,Impurity,Metabolite,Impurity,
+Caffeine,Diluent,Diluent,Diluent,
+Paracetamol,Diluent,Diluent,Diluent,
+Noscapine,Impurity,Natural Alkaloid,Impurity,
+Benzoic acid,Impurity,Synthesis Impurity,Impurity,

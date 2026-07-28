@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSIS — Forensic Similarity Intelligence System</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- ── Header ───────────────────────────────────────────── -->
+    <header class="app-header">
+        <div class="header-brand">FSIS</div>
+        <a href="/static/help.html" target="_blank" class="btn-help">Help</a>
+        <div class="header-dataset" id="header-dataset">No dataset loaded</div>
+        <div class="header-right">
+            <span class="header-runid" id="header-runid"></span>
+        </div>
+    </header>
+
+    <!-- ── Sidebar ──────────────────────────────────────────── -->
+    <aside class="app-sidebar">
+
+        <div class="sidebar-section">
+            <label class="sidebar-label">Dataset</label>
+            <select id="dataset-select" class="control-select">
+                <option value="">Select dataset…</option>
+                {% for ds in datasets %}
+                <option value="{{ ds }}">{{ ds }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn-primary" onclick="loadDataset()">Load Dataset</button>
+        </div>
+
+        <!-- ── Chemical filter ──────────────────────── -->
+        <div class="sidebar-section" id="filter-section" style="display:none">
+            <div class="filter-header">
+                <span class="sidebar-label">Chemical Filter
+                    <span class="filter-count" id="filter-count"></span>
+                </span>
+                <div class="filter-mode-toggle">
+                    <button class="mode-btn active" id="mode-any" onclick="setFilterMode('any')">ANY</button>
+                    <button class="mode-btn" id="mode-all" onclick="setFilterMode('all')">ALL</button>
+                </div>
+            </div>
+            <div id="filter-chips" class="filter-chips"></div>
+            <input type="text" id="chem-search" class="control-input" placeholder="Search chemicals…"
+                   oninput="renderChemList(this.value)">
+            <div id="chem-list" class="chem-list"></div>
+        </div>
+
+        <div class="sidebar-section" id="controls-section" style="display:none">
+
+            <label class="sidebar-label">Threshold</label>
+            <div class="slider-row">
+                <input type="range" id="threshold" min="0" max="1" step="0.01" value="0.5"
+                       oninput="updateSliderValue(this, 'threshold-val')">
+                <span id="threshold-val" class="slider-value">0.50</span>
+            </div>
+
+            <label class="sidebar-label" style="margin-top:14px">Analysis Preset</label>
+            <div class="preset-grid">
+                <button class="btn-preset" id="preset-survey"  onclick="applyPreset('survey')"  title="Jaccard-heavy, lower threshold — maps broad cluster structure">Source Map</button>
+                <button class="btn-preset" id="preset-batch"   onclick="applyPreset('batch')"   title="Cosine + Euclidean high, tight threshold — identifies same-batch samples">Batch Match</button>
+                <button class="btn-preset" id="preset-trace"   onclick="applyPreset('trace')"   title="TF-IDF dominant — finds hidden links via rare substances">Trace Markers</button>
+                <button class="btn-preset" id="preset-equal"   onclick="applyPreset('equal')"   title="Equal weights, default threshold — balanced overview">Equal Weights</button>
+            </div>
+
+            <label class="sidebar-label" style="margin-top:14px">Metric Weights</label>
+
+            <div class="weight-row">
+                <span class="weight-label tip-wrap">Cosine
+                    <span class="metric-tip"><a href="/static/help.html#metric-cosine" target="_blank">Open in Help ↗</a></span>
+                </span>
+                <input type="range" id="w-cosine" min="0" max="1" step="0.01" value="0.25"
+                       oninput="updateSliderValue(this, 'w-cosine-val'); clearActivePreset()">
+                <span id="w-cosine-val" class="slider-value">0.25</span>
+            </div>
+            <div class="weight-row">
+                <span class="weight-label tip-wrap">Jaccard
+                    <span class="metric-tip"><a href="/static/help.html#metric-jaccard" target="_blank">Open in Help ↗</a></span>
+                </span>
+                <input type="range" id="w-jaccard" min="0" max="1" step="0.01" value="0.25"
+                       oninput="updateSliderValue(this, 'w-jaccard-val'); clearActivePreset()">
+                <span id="w-jaccard-val" class="slider-value">0.25</span>
+            </div>
+            <div class="weight-row">
+                <span class="weight-label tip-wrap">Euclidean
+                    <span class="metric-tip"><a href="/static/help.html#metric-euclidean" target="_blank">Open in Help ↗</a></span>
+                </span>
+                <input type="range" id="w-euclidean" min="0" max="1" step="0.01" value="0.25"
+                       oninput="updateSliderValue(this, 'w-euclidean-val'); clearActivePreset()">
+                <span id="w-euclidean-val" class="slider-value">0.25</span>
+            </div>
+            <div class="weight-row">
+                <span class="weight-label tip-wrap">TF-IDF
+                    <span class="metric-tip"><a href="/static/help.html#metric-tfidf" target="_blank">Open in Help ↗</a></span>
+                </span>
+                <input type="range" id="w-tfidf" min="0" max="1" step="0.01" value="0.25"
+                       oninput="updateSliderValue(this, 'w-tfidf-val'); clearActivePreset()">
+                <span id="w-tfidf-val" class="slider-value">0.25</span>
+            </div>
+            <div class="weight-row">
+                <span class="weight-label tip-wrap">Pearson
+                    <span class="metric-tip"><a href="/static/help.html#metric-pearson" target="_blank">Open in Help ↗</a></span>
+                </span>
+                <input type="range" id="w-pearson" min="0" max="1" step="0.01" value="0.00"
+                       oninput="updateSliderValue(this, 'w-pearson-val'); clearActivePreset()">
+                <span id="w-pearson-val" class="slider-value">0.00</span>
+            </div>
+
+            <label class="sidebar-label" style="margin-top:14px">Pre-treatment</label>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <input type="checkbox" id="sqrt-pretreatment" onchange="clearActivePreset()">
+                <label for="sqrt-pretreatment" style="font-size:13px; color:#334;">
+                    √ Square root
+                    <a href="/static/help.html#pretreatment-sqrt" target="_blank"
+                       style="font-size:11px; color:#4a7fd4; margin-left:4px;">Help ↗</a>
+                </label>
+            </div>
+            <p style="font-size:11px; color:#778899; margin:0 0 10px 0;">
+                Compresses dominant peaks so minor impurities contribute more to all metrics.
+            </p>
+
+            <button class="btn-primary" style="margin-top:12px" onclick="computeGraph()">
+                Compute
+            </button>
+
+<div class="stats-block" id="stats-block"></div>
+
+            <div class="btn-group" style="margin-top:8px">
+                <button class="btn-secondary" onclick="exportGraphML()" title="Download current graph as GraphML file">Export GraphML</button>
+                <button class="btn-secondary" onclick="runNetworkAnalysis()" title="Centrality measures and community detection">Network Analysis</button>
+                <button class="btn-secondary btn-analytics" onclick="openAnalytics()" title="Metric comparison, threshold sweep, cluster profiles, timeline">Analytics</button>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ── Main graph area ──────────────────────────────────── -->
+    <main class="app-main">
+        <div id="graph-container">
+            <div class="graph-placeholder">Select a dataset to begin</div>
+        </div>
+
+        <!-- ── Timeline slider ──────────────────────────────── -->
+        <div id="timeline-bar" class="timeline-bar" style="display:none">
+            <div class="timeline-header">
+                <span class="timeline-title">Timeline</span>
+                <span id="timeline-range-label" class="timeline-range-label"></span>
+            </div>
+            <div class="timeline-slider-wrap">
+                <div class="timeline-track">
+                    <div class="timeline-fill" id="timeline-fill"></div>
+                </div>
+                <input type="range" id="timeline-min" class="timeline-input" step="1"
+                       oninput="onTimelineMinChange()">
+                <input type="range" id="timeline-max" class="timeline-input" step="1"
+                       oninput="onTimelineMaxChange()">
+            </div>
+            <div class="timeline-ticks" id="timeline-ticks"></div>
+        </div>
+
+        <div class="graph-hint">Click node for details &nbsp;·&nbsp; Ctrl+Click to multi-select &nbsp;·&nbsp; Drag background to pan &nbsp;·&nbsp; Scroll to zoom</div>
+    </main>
+
+</div><!-- /.app-layout -->
+
+<!-- ── Right node detail panel ──────────────────────────────── -->
+<aside class="node-panel" id="node-panel">
+    <button class="panel-close" onclick="closeNodePanel()">×</button>
+    <div id="node-panel-content"></div>
+</aside>
+
+<!-- ── Bottom selection drawer ──────────────────────────────── -->
+<div class="selection-drawer" id="selection-drawer">
+    <div class="drawer-header">
+        <span id="drawer-title">Selected samples</span>
+        <button onclick="clearSelection()">Clear selection</button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+</div>
+
+<!-- ── Network Analysis Modal ────────────────────────────────── -->
+<div id="analysis-modal" class="modal-overlay" onclick="closeAnalysisModal(event)">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>Network Analysis</span>
+            <button class="modal-close" onclick="document.getElementById('analysis-modal').classList.remove('open')">×</button>
+        </div>
+        <div class="modal-body" id="analysis-modal-body"></div>
+    </div>
+</div>
+
+<!-- ── Analytics Modal ───────────────────────────────────────── -->
+<div id="analytics-modal" class="modal-overlay" onclick="closeAnalyticsModal(event)">
+    <div class="modal-box modal-box-wide">
+        <div class="modal-header">
+            <span>Analytics</span>
+            <button class="modal-close" onclick="document.getElementById('analytics-modal').classList.remove('open')">×</button>
+        </div>
+        <div class="analytics-tabs">
+            <button class="atab active" onclick="showAnalyticsTab('metrics', this)">Metric Comparison</button>
+            <button class="atab" onclick="showAnalyticsTab('sweep', this)">Threshold Sweep</button>
+            <button class="atab" onclick="showAnalyticsTab('clusters', this)">Cluster Profiles</button>
+            <button class="atab" onclick="showAnalyticsTab('timeline', this)">Timeline</button>
+        </div>
+        <div class="modal-body analytics-modal-body">
+            <div id="atab-metrics"  class="atab-panel active"></div>
+            <div id="atab-sweep"    class="atab-panel" style="display:none"></div>
+            <div id="atab-clusters" class="atab-panel" style="display:none"></div>
+            <div id="atab-timeline" class="atab-panel" style="display:none"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

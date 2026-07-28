@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSIS Help — Forensic Similarity Intelligence System</title>
+    <style>
+        /* ── Reset & base ──────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #f5f6fa;
+        }
+
+        a { color: #4a7fd4; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ── Layout ────────────────────────────────────────────── */
+        .page {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar nav ───────────────────────────────────────── */
+        .nav {
+            background: #1a2535;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .nav-brand {
+            padding: 20px 20px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4a9fd4;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #0d1826;
+        }
+
+        .nav-brand span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #556e8a;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .nav-section {
+            padding: 16px 20px 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #4a6880;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .nav ul { list-style: none; padding-bottom: 12px; }
+
+        .nav ul li a {
+            display: block;
+            padding: 5px 20px 5px 28px;
+            font-size: 12px;
+            color: #8fa8c0;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .nav ul li a:hover,
+        .nav ul li a.active {
+            color: #c8d8e8;
+            background: rgba(74,127,212,0.12);
+            text-decoration: none;
+        }
+
+        .nav-top-link {
+            display: block;
+            padding: 5px 20px;
+            font-size: 12px;
+            color: #8fa8c0;
+            transition: color 0.15s;
+        }
+        .nav-top-link:hover { color: #c8d8e8; text-decoration: none; }
+
+        /* ── Main content ──────────────────────────────────────── */
+        .content {
+            padding: 48px 56px;
+            max-width: 860px;
+        }
+
+        /* ── Section headings ──────────────────────────────────── */
+        .section {
+            margin-bottom: 56px;
+            scroll-margin-top: 24px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #4a7fd4;
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2535;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2535;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8edf5;
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        p { margin-bottom: 12px; color: #445566; }
+
+        /* ── Metric cards ──────────────────────────────────────── */
+        .metric-card {
+            background: white;
+            border: 1px solid #e0e8f0;
+            border-left: 4px solid #4a7fd4;
+            border-radius: 0 8px 8px 0;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .metric-card.green  { border-left-color: #27ae60; }
+        .metric-card.orange { border-left-color: #f39c12; }
+        .metric-card.purple { border-left-color: #9b59b6; }
+        .metric-card.teal   { border-left-color: #1abc9c; }
+
+        .metric-card h3 { margin-top: 0; }
+
+        .metric-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tag-blue   { background: #e8f0fc; color: #4a7fd4; }
+        .tag-green  { background: #e8f8ee; color: #27ae60; }
+        .tag-orange { background: #fef6e6; color: #d68910; }
+        .tag-purple { background: #f5eefb; color: #9b59b6; }
+        .tag-teal   { background: #e6f8f5; color: #1abc9c; }
+
+        /* ── Chemical category cards ───────────────────────────── */
+        .chem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .chem-card {
+            background: white;
+            border: 1px solid #e0e8f0;
+            border-radius: 8px;
+            padding: 16px 18px;
+        }
+
+        .chem-card h3 {
+            margin-top: 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chem-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-active    { background: #e74c3c; }
+        .dot-adulterant{ background: #f39c12; }
+        .dot-diluent   { background: #95a5a6; }
+        .dot-precursor { background: #9b59b6; }
+        .dot-impurity  { background: #3498db; }
+        .dot-artefact  { background: #bdc3c7; }
+
+        /* ── Info boxes ────────────────────────────────────────── */
+        .info-box {
+            background: #f0f6ff;
+            border: 1px solid #c8dcf8;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #2c4870;
+        }
+
+        .info-box.warning {
+            background: #fffbf0;
+            border-color: #f8e4a0;
+            color: #7a5c10;
+        }
+
+        .info-box strong { display: block; margin-bottom: 4px; }
+
+        /* ── Formula ───────────────────────────────────────────── */
+        .formula {
+            background: #1a2535;
+            color: #c8e0f8;
+            font-family: "Courier New", monospace;
+            font-size: 13px;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 12px 0;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Table ─────────────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f0f4f8;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 700;
+            color: #445566;
+            border-bottom: 2px solid #e0e8f0;
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eef2f8;
+            color: #445566;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        /* ── Divider ───────────────────────────────────────────── */
+        .divider {
+            border: none;
+            border-top: 1px solid #e8edf5;
+            margin: 40px 0;
+        }
+
+        /* ── Scroll highlight ──────────────────────────────────── */
+        :target { animation: highlight 1.5s ease; }
+        @keyframes highlight {
+            0%   { background: #fff8e1; }
+            100% { background: transparent; }
+        }
+
+        /* ── Real-data example boxes ───────────────────────────── */
+        .example-box {
+            background: #f8faff;
+            border: 1px solid #d0ddf0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .example-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #4a7fd4;
+            margin-bottom: 12px;
+        }
+
+        .example-box table {
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .example-box th {
+            background: #eef2fb;
+            font-size: 11px;
+        }
+
+        .score-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0 8px;
+        }
+
+        .score-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border: 1px solid #dde8f8;
+            border-radius: 6px;
+            padding: 6px 14px;
+            min-width: 86px;
+        }
+
+        .score-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #8899aa;
+            margin-bottom: 3px;
+        }
+
+        .score-value {
+            font-size: 17px;
+            font-weight: 700;
+            font-family: "Courier New", monospace;
+            color: #1a2535;
+        }
+
+        .score-value.high { color: #27ae60; }
+        .score-value.mid  { color: #d68910; }
+        .score-value.low  { color: #c0392b; }
+
+        .example-note {
+            color: #445566;
+            line-height: 1.65;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .example-note strong { color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+    <nav class="nav">
+        <div class="nav-brand">FSIS <span>Help &amp; Reference</span></div>
+
+        <a class="nav-top-link" href="#overview">Overview</a>
+
+        <div class="nav-section">Similarity Metrics</div>
+        <ul>
+            <li><a href="#metric-cosine">Cosine Similarity</a></li>
+            <li><a href="#metric-jaccard">Jaccard Similarity</a></li>
+            <li><a href="#metric-euclidean">Euclidean Similarity</a></li>
+            <li><a href="#metric-tfidf">TF-IDF Similarity</a></li>
+            <li><a href="#metric-pearson">Pearson Similarity</a></li>
+            <li><a href="#pretreatment-sqrt">√ Square Root Pre-treatment</a></li>
+            <li><a href="#metric-joint">Joint Similarity Score</a></li>
+            <li><a href="#metric-weights">Weights &amp; Threshold</a></li>
+        </ul>
+
+        <div class="nav-section">Chemical Categories</div>
+        <ul>
+            <li><a href="#chem-active">Active Ingredient</a></li>
+            <li><a href="#chem-adulterant">Adulterant</a></li>
+            <li><a href="#chem-diluent">Diluent / Filler</a></li>
+            <li><a href="#chem-precursor">Precursor</a></li>
+            <li><a href="#chem-impurity">Impurity / Route Marker</a></li>
+            <li><a href="#chem-artefact">Analytical Artefact</a></li>
+        </ul>
+
+        <div class="nav-section">Analysis Presets</div>
+        <ul>
+            <li><a href="#preset-overview">Overview</a></li>
+            <li><a href="#preset-survey">Source Map</a></li>
+            <li><a href="#preset-batch">Batch Match</a></li>
+            <li><a href="#preset-trace">Trace Markers</a></li>
+            <li><a href="#preset-equal">Equal Weights</a></li>
+        </ul>
+
+        <div class="nav-section">Methodology</div>
+        <ul>
+            <li><a href="#method-overview">Investigative Approach</a></li>
+            <li><a href="#method-1">1. Map the Landscape</a></li>
+            <li><a href="#method-2">2. Find Definitive Links</a></li>
+            <li><a href="#method-3">3. Hunt Trace Markers</a></li>
+            <li><a href="#method-4">4. Characterise Outliers</a></li>
+            <li><a href="#method-filters">Chemical Filter Order</a></li>
+            <li><a href="#method-export">5. Export &amp; Further Analysis</a></li>
+        </ul>
+
+        <div class="nav-section">Using the App</div>
+        <ul>
+            <li><a href="#using-graph">Network Graph</a></li>
+            <li><a href="#using-node">Inspecting a Sample</a></li>
+            <li><a href="#using-compare">Comparing Samples</a></li>
+            <li><a href="#using-interpret">Interpreting Results</a></li>
+            <li><a href="#using-network-analysis">Network Analysis</a></li>
+            <li><a href="#using-export-graphml">GraphML Export</a></li>
+            <li><a href="#using-analytics">Analytics Overview</a></li>
+            <li><a href="#using-analytics-metrics">Metric Comparison</a></li>
+            <li><a href="#using-analytics-sweep">Threshold Sweep</a></li>
+            <li><a href="#using-analytics-clusters">Cluster Profiles</a></li>
+            <li><a href="#using-analytics-timeline">Timeline</a></li>
+        </ul>
+    </nav>
+
+    <!-- ── Content ────────────────────────────────────────────── -->
+    <main class="content">
+
+        <!-- Overview -->
+        <section class="section" id="overview">
+            <span class="section-tag">Introduction</span>
+            <h1>Forensic Similarity Intelligence System</h1>
+            <p>
+                FSIS is a tool for comparing the chemical profiles of drug samples to identify
+                those that may share a common origin — such as the same clandestine laboratory,
+                synthesis batch, or supply chain. It does this by computing similarity scores
+                between samples based on the substances detected and their proportions.
+            </p>
+            <p>
+                A high similarity score between two samples means their chemical profiles are
+                closely matched. This does not prove a common origin on its own, but provides
+                an objective, quantitative basis for prioritising samples for further
+                investigation.
+            </p>
+            <div class="info-box warning">
+                <strong>Forensic caveat</strong>
+                FSIS provides triage and intelligence support. All findings should be
+                considered alongside case context, analytical uncertainty, and expert
+                interpretation before any evidential conclusions are drawn.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ── Similarity Metrics ─────────────────────────────── -->
+        <section class="section" id="metrics">
+            <span class="section-tag">Similarity Metrics</span>
+            <h2>How Similarity is Measured</h2>
+            <p>
+                Each sample is represented as a vector of substance percentages — one value
+                per substance detected across the dataset. FSIS computes four independent
+                similarity scores for every pair of samples, then combines them into a single
+                Joint Similarity score.
+            </p>
+        </section>
+
+        <section class="section" id="metric-cosine">
+            <div class="metric-card">
+                <span class="metric-tag tag-blue">Cosine Similarity</span>
+                <h3>Profile Shape</h3>
+                <p>
+                    Cosine similarity measures the <strong>angle between two sample vectors</strong>,
+                    capturing whether the overall shape of the chemical profiles match —
+                    regardless of absolute concentrations.
+                </p>
+                <p>
+                    Two samples with the same proportional profile (e.g. 90% cocaine, 5%
+                    levamisole, 5% caffeine) will score close to 1.0 even if the total
+                    recovered amounts differ. This makes it robust to variation in sample
+                    size or recovery efficiency.
+                </p>
+                <div class="formula">
+                    cos(A, B) = (A · B) / (‖A‖ × ‖B‖)
+                </div>
+                <p>
+                    <strong>When it is most useful:</strong> Detecting samples with a similar
+                    composition pattern even when concentrations vary slightly between seizures.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Real example — Heroin dataset: samples BZ020 and bz204</div>
+                <table>
+                    <thead><tr><th>Substance</th><th>BZ020</th><th>bz204</th></tr></thead>
+                    <tbody>
+                        <tr><td>Caffeine</td><td>52.2%</td><td>45.5%</td></tr>
+                        <tr><td>Paracetamol</td><td>39.5%</td><td>48.6%</td></tr>
+                        <tr><td>Papaverine</td><td>6.4%</td><td>—</td></tr>
+                        <tr><td>Meconine</td><td>2.0%</td><td>0.5%</td></tr>
+                        <tr><td>Heroin</td><td>—</td><td>2.8%</td></tr>
+                        <tr><td>Diacetamate</td><td>—</td><td>2.0%</td></tr>
+                        <tr><td>6-MAM</td><td>—</td><td>0.4%</td></tr>
+                        <tr><td>Acetylcodeine</td><td>—</td><td>0.2%</td></tr>
+                    </tbody>
+                </table>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value high">0.979</span></div>
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value low">0.375</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value high">0.881</span></div>
+                </div>
+                <p class="example-note">
+                    Both samples are heavily dominated by <strong>Caffeine and Paracetamol</strong>. Even though
+                    the exact percentages differ and the remaining substances are quite different (BZ020 has Papaverine;
+                    bz204 has Heroin, 6-MAM, Diacetamate, Acetylcodeine), their composition <em>vectors point in the
+                    same direction</em> — hence Cosine = 0.979.
+                    The Jaccard score of 0.375 (3 shared out of 8 combined substances) reflects that the two substance
+                    sets are actually quite different. Cosine alone would suggest a strong match; Jaccard reveals the
+                    profiles diverge significantly once you look beyond the two dominant fillers.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-jaccard">
+            <div class="metric-card green">
+                <span class="metric-tag tag-green">Jaccard Similarity</span>
+                <h3>Substance Overlap</h3>
+                <p>
+                    Jaccard similarity compares which substances are <strong>present or absent</strong>
+                    in each sample, ignoring how much of each substance is present. It answers
+                    the question: what fraction of the combined substance set do both samples share?
+                </p>
+                <div class="formula">
+                    J(A, B) = |A ∩ B| / |A ∪ B|
+                </div>
+                <p>
+                    A score of 1.0 means both samples contain exactly the same set of substances.
+                    A score of 0 means they share none.
+                </p>
+                <p>
+                    <strong>When it is most useful:</strong> Identifying samples that share
+                    an unusual combination of trace substances (e.g. a rare adulterant present
+                    in both), which may be more forensically significant than proportional similarity.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Real example — Heroin dataset: two contrasting pairs</div>
+                <p style="font-size:12px; color:#556e8a; margin-bottom:8px; font-weight:600;">Pair A — C056 vs C059 (Jaccard = 1.0)</p>
+                <table>
+                    <thead><tr><th>Substance</th><th>C056</th><th>C059</th><th>Shared?</th></tr></thead>
+                    <tbody>
+                        <tr><td>Caffeine</td><td>38.3%</td><td>36.5%</td><td>&#10003;</td></tr>
+                        <tr><td>Paracetamol</td><td>36.4%</td><td>35.9%</td><td>&#10003;</td></tr>
+                        <tr><td>6-MAM</td><td>15.2%</td><td>15.6%</td><td>&#10003;</td></tr>
+                        <tr><td>Diacetamate</td><td>5.6%</td><td>6.3%</td><td>&#10003;</td></tr>
+                        <tr><td>Meconine</td><td>1.6%</td><td>2.0%</td><td>&#10003;</td></tr>
+                        <tr><td>Acetylcodeine</td><td>1.1%</td><td>1.8%</td><td>&#10003;</td></tr>
+                        <tr><td>Hydrocotarnine</td><td>0.4%</td><td>0.7%</td><td>&#10003;</td></tr>
+                        <tr><td>Papaverine</td><td>0.5%</td><td>0.5%</td><td>&#10003;</td></tr>
+                        <tr><td>Heroin</td><td>0.4%</td><td>0.5%</td><td>&#10003;</td></tr>
+                        <tr><td>Noscapine</td><td>0.3%</td><td>0.3%</td><td>&#10003;</td></tr>
+                        <tr><td>Morphine</td><td>0.1%</td><td>0.1%</td><td>&#10003;</td></tr>
+                    </tbody>
+                </table>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value high">1.000</span></div>
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value high">0.999</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value high">0.979</span></div>
+                </div>
+                <p class="example-note">
+                    All 11 substances are present in both samples. Jaccard = 11 ÷ 11 = <strong>1.0</strong>.
+                    The substance set is identical, and since concentrations are also very close, all metrics agree.
+                    This is the signature of samples that very likely share a common origin.
+                </p>
+
+                <p style="font-size:12px; color:#556e8a; margin:16px 0 8px; font-weight:600;">Pair B — BZ020 vs bz204 (Jaccard = 0.375)</p>
+                <p class="example-note">
+                    From the cosine example above: BZ020 has 4 substances, bz204 has 7.
+                    They share only 3 (Caffeine, Paracetamol, Meconine).
+                    Jaccard = 3 ÷ 8 = <strong>0.375</strong>, despite a cosine of 0.979.
+                    The different trace substances — Papaverine in BZ020 versus Heroin, 6-MAM, Diacetamate, and
+                    Acetylcodeine in bz204 — tell a very different story about the origin and composition of each
+                    sample. Jaccard captures this divergence; cosine does not.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-euclidean">
+            <div class="metric-card orange">
+                <span class="metric-tag tag-orange">Euclidean Similarity</span>
+                <h3>Proportional Closeness</h3>
+                <p>
+                    Euclidean similarity converts the straight-line distance between two
+                    sample vectors into a similarity score. It is sensitive to differences
+                    in the <strong>actual proportions</strong> of substances, not just
+                    their presence or profile shape.
+                </p>
+                <div class="formula">
+                    euc_sim(A, B) = 1 / (1 + ‖A − B‖)
+                </div>
+                <p>
+                    Two samples where cocaine is 90% vs 70% will score lower here than
+                    under cosine similarity. This makes Euclidean similarity stricter and
+                    more sensitive to formulation differences.
+                </p>
+                <p>
+                    <strong>When it is most useful:</strong> Tightening comparisons to only
+                    flag samples with very similar concentrations — useful where production
+                    consistency is expected within a batch.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Real example — Heroin dataset: samples 516 and C054</div>
+                <table>
+                    <thead><tr><th>Substance</th><th>516</th><th>C054</th></tr></thead>
+                    <tbody>
+                        <tr><td>Heroin</td><td>68.8%</td><td>0.1%</td></tr>
+                        <tr><td>Caffeine</td><td>15.8%</td><td>62.1%</td></tr>
+                        <tr><td>Paracetamol</td><td>4.4%</td><td>26.5%</td></tr>
+                        <tr><td>6-MAM</td><td>3.5%</td><td>4.9%</td></tr>
+                        <tr><td>Acetylcodeine</td><td>3.2%</td><td>0.3%</td></tr>
+                        <tr><td>Diacetamate</td><td>3.1%</td><td>5.9%</td></tr>
+                        <tr><td>Papaverine</td><td>1.2%</td><td>0.2%</td></tr>
+                    </tbody>
+                </table>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value high">1.000</span></div>
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value low">0.237</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value mid">0.538</span></div>
+                </div>
+                <p class="example-note">
+                    Both samples contain exactly the same 7 substances — Jaccard = <strong>1.0</strong>. Yet the
+                    profiles are dramatically different: sample 516 is <strong>69% Heroin</strong> with Caffeine as a
+                    secondary component, while C054 is <strong>62% Caffeine</strong> with only a trace of Heroin
+                    (0.1%). These samples may have been cut to very different purity levels, or may represent
+                    different stages in the supply chain.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    The Euclidean score of 0.538 reflects this large proportional gap. The Cosine score of 0.237
+                    also flags the very different profile shapes. <strong>Jaccard alone would suggest a strong
+                    match; Cosine and Euclidean reveal that the actual formulations are very different.</strong>
+                    This is why FSIS combines all three metrics rather than relying on any one alone.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    Compare this with C056 vs C059 (Jaccard example above): also Jaccard = 1.0, but with
+                    near-identical proportions — Euclidean = 0.979. The Euclidean score distinguishes these
+                    two very different situations.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-tfidf">
+            <div class="metric-card purple">
+                <span class="metric-tag tag-purple">TF-IDF Similarity</span>
+                <h3>Rare Substance Weighting</h3>
+                <p>
+                    TF-IDF (Term Frequency – Inverse Document Frequency) is adapted from
+                    text analysis. It up-weights substances that are <strong>rare across
+                    the dataset</strong> and down-weights ubiquitous ones.
+                </p>
+                <p>
+                    For example, in a cocaine dataset, cocaine itself appears in almost
+                    every sample and carries little discriminating power. A specific impurity
+                    appearing in only a handful of samples is far more informative — TF-IDF
+                    amplifies this signal.
+                </p>
+                <div class="formula">
+                    TF-IDF(s, t) = percentage(s,t) × log((1+N) / (1+df(t))) + 1
+                </div>
+                <p style="font-size:12px; color:#778899;">
+                    where N = total samples, df(t) = samples containing substance t
+                </p>
+                <p>
+                    Similarity is then the cosine similarity of the TF-IDF weighted vectors.
+                </p>
+                <p>
+                    <strong>When it is most useful:</strong> Linking samples via unusual
+                    trace substances or manufacturing impurities that would otherwise be
+                    diluted by the dominant active ingredient.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Real example — Heroin dataset: why common substances are downweighted</div>
+                <p class="example-note">
+                    Across the 56 Heroin samples in this dataset, <strong>Caffeine appears in 43 samples (77%)</strong>
+                    and <strong>Paracetamol in 38 (68%)</strong>. Because they are so widespread, TF-IDF assigns them a
+                    low weight — knowing that two samples both contain Caffeine tells you very little about whether
+                    they share a common origin.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    By contrast, <strong>Hydrocotarnine appears in only 9 samples (16%)</strong> and
+                    <strong>Noscapine in 6 (11%)</strong>. These are opium-alkaloid impurities that are
+                    characteristic of specific raw material sources or processing methods. When two samples
+                    both contain Noscapine, that is a much more informative signal — TF-IDF amplifies it
+                    accordingly.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    In the near-perfect pair C056 vs C059, both samples contain Noscapine (0.3%), Hydrocotarnine
+                    (~0.6%), and Morphine (~0.1%) in addition to their dominant components. Under standard cosine
+                    similarity, these trace substances contribute little because their absolute values are tiny.
+                    TF-IDF up-weights them, rewarding the shared rare profile and strengthening the linkage signal.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-pearson">
+            <div class="metric-card purple">
+                <span class="metric-tag tag-purple">Pearson Similarity</span>
+                <h3>Profile Pattern Similarity</h3>
+                <p>
+                    Pearson similarity measures whether two samples share the same
+                    <strong>relative pattern</strong> of substances, regardless of their
+                    overall concentrations. It is mathematically equivalent to cosine
+                    similarity computed on <em>mean-centred</em> rows — each sample's
+                    average substance value is subtracted before comparison.
+                </p>
+                <p>
+                    Where cosine asks "do these two profiles point in the same direction?",
+                    Pearson asks "do the <strong>peaks and troughs</strong> rise and fall
+                    together?". A sample that is twice as concentrated as another but has
+                    the same proportional makeup will score very high on Pearson even if
+                    Euclidean similarity is lower.
+                </p>
+                <div class="formula">
+                    Pearson(A, B) = cosine(A − mean(A), B − mean(B))
+                </div>
+                <p style="font-size:12px; color:#778899;">
+                    Negative correlations (anti-patterns) are clipped to 0 — they indicate
+                    dissimilarity, not similarity.
+                </p>
+                <p>
+                    <strong>When it is most useful:</strong> Detecting samples that share a
+                    characteristic impurity or adulterant pattern even when absolute
+                    concentrations differ between seizures or across time. Research on cocaine
+                    profiling (Morelato 2015) found Pearson to be among the best-performing
+                    single metrics for within-source discrimination.
+                </p>
+                <p>
+                    <strong>Default weight is 0.</strong> Add weight to this metric when you
+                    want to prioritise pattern matching over absolute composition. It
+                    complements TF-IDF: TF-IDF rewards rare shared substances, while Pearson
+                    rewards a consistent relative profile across all substances.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Pearson vs Cosine — why centering matters</div>
+                <p class="example-note">
+                    Imagine two cocaine samples: Sample A has 80% cocaine, 10% levamisole, 5% phenacetin, and
+                    5% traces. Sample B has 60% cocaine, 8% levamisole, 4% phenacetin, and 28% traces from a
+                    different cutting agent. Their <strong>cosine similarity is moderate</strong> because the
+                    overall vectors point in somewhat different directions.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    But after mean-centring, <strong>Pearson recognises that levamisole and phenacetin both sit
+                    above the mean in both samples</strong>, and cocaine sits above the mean in both — the
+                    relative profile pattern is consistent. Pearson captures this shared structure even though
+                    the absolute proportions differ.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    This is particularly valuable when comparing seizures made at different points in a supply
+                    chain where dilution may have occurred between the source and the street sample.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="pretreatment-sqrt">
+            <div class="metric-card teal">
+                <span class="metric-tag tag-teal">√ Square Root Pre-treatment</span>
+                <h3>Compressing Dominant Peaks</h3>
+                <p>
+                    Square root pre-treatment applies <strong>√x</strong> to every substance
+                    value in the feature matrix before any similarity metric is computed.
+                    The transformed rows are then re-normalised to proportions so the
+                    computation is consistent with the standard pipeline.
+                </p>
+                <p>
+                    Drug samples are often dominated by one substance — cocaine in a cocaine
+                    seizure, heroin in a heroin seizure. Without pre-treatment, these dominant
+                    peaks drive the similarity scores so strongly that minor impurities and
+                    adulterants (which carry the most forensic discrimination) contribute very
+                    little. Square root compression pulls the dominant peak down and lifts the
+                    minor components up, giving them proportionally more weight in all metrics.
+                </p>
+                <div class="formula">
+                    x′ = √x &nbsp;→&nbsp; normalise row to sum to 1
+                </div>
+                <p>
+                    <strong>Effect on each metric:</strong> All five metrics (Cosine, Jaccard,
+                    Euclidean, TF-IDF, Pearson) are recomputed from the transformed matrix
+                    when this option is enabled. Precomputed matrices loaded from disk are not
+                    used — everything is calculated live.
+                </p>
+                <p>
+                    <strong>When to use it:</strong> Validated in published forensic drug
+                    profiling research (Morelato 2015, Michelot 2017) as improving
+                    within-source discrimination, particularly for heroin where opium-alkaloid
+                    impurities are highly informative but present at low concentrations.
+                    A good starting point when the dominant active ingredient is washing out
+                    links that you expect to see.
+                </p>
+                <p>
+                    <strong>When not to use it:</strong> If the concentration ratios between
+                    substances are themselves the forensic signal (e.g. a precise cutting ratio
+                    is the link), sqrt compression reduces that signal. Use standard mode for
+                    batch-matching investigations where absolute proportions matter.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example — Heroin: before and after √ pre-treatment</div>
+                <p class="example-note">
+                    A sample might be 72% heroin, 15% caffeine, 8% paracetamol, and 5% across
+                    several trace impurities including noscapine (0.4%) and hydrocotarnine (0.6%).
+                    Under standard normalisation, those two trace impurities together represent
+                    only 1% of the vector — their contribution to cosine similarity is tiny.
+                </p>
+                <p class="example-note" style="margin-top:8px;">
+                    After √ pre-treatment: √0.72 ≈ 0.85, √0.004 ≈ 0.063, √0.006 ≈ 0.077.
+                    After re-normalisation, noscapine and hydrocotarnine now represent a larger
+                    share of the transformed vector. Two samples that share these impurities
+                    will score noticeably higher — the forensic signal is amplified without
+                    discarding any data.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-joint">
+            <div class="metric-card teal">
+                <span class="metric-tag tag-teal">Joint Similarity Score</span>
+                <h3>Combined Score</h3>
+                <p>
+                    The five metrics are combined into a single Joint Similarity score using
+                    a <strong>geometric (multiplicative) fusion</strong>. This is more
+                    conservative than averaging — if any one metric is weak, the joint score
+                    is pulled down accordingly.
+                </p>
+                <div class="formula">
+                    JS = Cosine^w1 × Jaccard^w2 × Euclidean^w3 × TFIDF^w4 × Pearson^w5
+                </div>
+                <p>
+                    The weights (w1–w5) are normalised to sum to 1.0 before being applied.
+                    Any metric with weight 0 contributes nothing (it is treated as neutral).
+                    Two samples must score well across all weighted metrics to achieve a high
+                    joint similarity.
+                </p>
+                <p>
+                    Pairs with a Joint Similarity at or above the <strong>threshold</strong>
+                    are drawn as edges in the network graph.
+                </p>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Real example — Heroin dataset: reading the four scores together</div>
+                <p style="font-size:12px; color:#556e8a; font-weight:600; margin-bottom:8px;">C056 vs C059 — strong candidate for common origin</p>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value high">0.999</span></div>
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value high">1.000</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value high">0.979</span></div>
+                    <div class="score-badge"><span class="score-label">Joint</span><span class="score-value high">0.993</span></div>
+                </div>
+                <p class="example-note">
+                    All four scores are very high and in agreement. Same 11 substances, near-identical proportions,
+                    matching profile shape. The geometric fusion produces Joint = 0.993. This pair would appear as
+                    a strong edge in the network at any threshold up to 99%.
+                </p>
+
+                <p style="font-size:12px; color:#556e8a; font-weight:600; margin:16px 0 8px;">BZ020 vs bz204 — weak overall link despite surface similarity</p>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value high">0.979</span></div>
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value low">0.375</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value high">0.881</span></div>
+                    <div class="score-badge"><span class="score-label">Joint</span><span class="score-value mid">0.687</span></div>
+                </div>
+                <p class="example-note">
+                    Cosine alone looks compelling at 0.979, but the low Jaccard (0.375) pulls the geometric product
+                    down sharply. Joint = 0.687. The multiplicative formula penalises any weak score — if Jaccard
+                    says the substance sets are only 37.5% alike, that weakness is reflected in the final score
+                    regardless of how well the dominant components agree. This pair would appear as an edge at a
+                    threshold of 50% but not at 75%.
+                </p>
+
+                <p style="font-size:12px; color:#556e8a; font-weight:600; margin:16px 0 8px;">516 vs C054 — same substances, very different product</p>
+                <div class="score-row">
+                    <div class="score-badge"><span class="score-label">Cosine</span><span class="score-value low">0.237</span></div>
+                    <div class="score-badge"><span class="score-label">Jaccard</span><span class="score-value high">1.000</span></div>
+                    <div class="score-badge"><span class="score-label">Euclidean</span><span class="score-value mid">0.538</span></div>
+                    <div class="score-badge"><span class="score-label">Joint</span><span class="score-value low">0.504</span></div>
+                </div>
+                <p class="example-note">
+                    The very low Cosine (0.237) dominates here: the profile shapes are completely different even
+                    though the substance set is identical. The geometric product collapses to Joint = 0.504.
+                    A Jaccard-only analyst might flag this pair as highly similar; the joint score correctly
+                    reflects that the actual formulations are very different.
+                </p>
+            </div>
+        </section>
+
+        <section class="section" id="metric-weights">
+            <h2>Weights &amp; Threshold</h2>
+
+            <h3>Metric Weights</h3>
+            <p>
+                The four sliders control how much each metric contributes to the joint score.
+                Setting a weight to zero removes that metric entirely. The weights are
+                automatically normalised, so only their relative values matter.
+            </p>
+
+            <table>
+                <thead>
+                    <tr><th>Setting</th><th>Effect</th><th>When to use</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Equal weights (0.25 each)</td>
+                        <td>Balanced contribution from all four metrics</td>
+                        <td>Default / exploratory analysis</td>
+                    </tr>
+                    <tr>
+                        <td>High Jaccard + TF-IDF</td>
+                        <td>Emphasises shared rare substances</td>
+                        <td>Searching for common trace profiles</td>
+                    </tr>
+                    <tr>
+                        <td>High Cosine + Euclidean</td>
+                        <td>Emphasises proportional closeness</td>
+                        <td>Tight batch-level comparisons</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Threshold</h3>
+            <p>
+                The threshold controls which sample pairs appear as edges in the network.
+                Only pairs with a Joint Similarity <strong>at or above</strong> this value
+                are connected. Lowering the threshold reveals more connections; raising it
+                shows only the strongest links.
+            </p>
+            <div class="info-box">
+                <strong>Recommended starting point</strong>
+                Begin with a threshold of 0.5 and adjust based on the density of the
+                resulting network. A very dense graph (most nodes connected) suggests
+                the threshold should be raised. A very sparse graph may benefit from
+                a lower threshold.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ── Analysis Presets ──────────────────────────────── -->
+        <section class="section" id="preset-overview">
+            <span class="section-tag">Analysis Presets</span>
+            <h2>Analysis Presets</h2>
+            <p>
+                Rather than manually adjusting four weight sliders, FSIS provides four named
+                presets that configure the weights and threshold for specific investigative goals.
+                Each preset reflects a deliberate forensic strategy — a different question you
+                might ask of the data.
+            </p>
+            <p>
+                A useful starting sequence is: <strong>Source Map → Batch Match → Trace Markers</strong>.
+                Start broad to understand the landscape, then tighten to confirm same-batch candidates,
+                then switch to rare-substance mode to find hidden links that broad analysis missed.
+                Use <strong>Equal Weights</strong> as a neutral reference at any point.
+            </p>
+
+            <table>
+                <thead>
+                    <tr><th>Preset</th><th>Jaccard</th><th>Cosine</th><th>Euclidean</th><th>TF-IDF</th><th>Threshold</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Source Map</strong></td><td>0.55</td><td>0.15</td><td>0.15</td><td>0.15</td><td>0.45</td></tr>
+                    <tr><td><strong>Batch Match</strong></td><td>0.15</td><td>0.35</td><td>0.35</td><td>0.15</td><td>0.70</td></tr>
+                    <tr><td><strong>Trace Markers</strong></td><td>0.20</td><td>0.10</td><td>0.10</td><td>0.60</td><td>0.50</td></tr>
+                    <tr><td><strong>Equal Weights</strong></td><td>0.25</td><td>0.25</td><td>0.25</td><td>0.25</td><td>0.50</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="preset-survey">
+            <div class="metric-card green">
+                <span class="metric-tag tag-green">Source Map</span>
+                <h3>Broad cluster survey — where do the families of samples lie?</h3>
+                <p>
+                    <strong>Weights:</strong> Jaccard 0.55 · Cosine 0.15 · Euclidean 0.15 · TF-IDF 0.15 · Threshold 0.45
+                </p>
+                <p>
+                    Jaccard dominates because it answers the most fundamental question in
+                    source linkage: <em>do these two samples contain the same set of substances?</em>
+                    A shared combination of adulterant + diluent + trace alkaloid is a much
+                    more specific fingerprint than similar proportions of a single dominant substance.
+                    Jaccard captures this regardless of concentration.
+                </p>
+                <p>
+                    The threshold is deliberately low (0.45) to cast a wide net. At this stage
+                    you want to see the full landscape — which samples cluster together, which
+                    stand alone, and how many distinct groupings exist. It is easier to tighten
+                    later than to discover you missed a connection by starting too strict.
+                </p>
+                <p>
+                    The other three metrics are kept at a low, equal weight rather than zero.
+                    This prevents a pair of samples that share the same substances but have
+                    wildly different proportions from scoring as highly as a pair that genuinely
+                    matches across all dimensions.
+                </p>
+            </div>
+            <div class="info-box">
+                <strong>What to look for</strong>
+                Large clusters = families of chemically related samples, likely sharing a
+                common supply chain or laboratory. Isolated nodes (no connections) = samples
+                with a unique substance fingerprint — potential outliers worth examining individually.
+                Note which clusters persist as you then move to Batch Match.
+            </div>
+        </section>
+
+        <section class="section" id="preset-batch">
+            <div class="metric-card orange">
+                <span class="metric-tag tag-orange">Batch Match</span>
+                <h3>Tight proportion matching — same recipe, same time?</h3>
+                <p>
+                    <strong>Weights:</strong> Cosine 0.35 · Euclidean 0.35 · TF-IDF 0.15 · Jaccard 0.15 · Threshold 0.70
+                </p>
+                <p>
+                    Cosine and Euclidean dominate because they enforce that both the <em>shape</em>
+                    of the chemical profile and the <em>actual concentrations</em> must agree closely.
+                    Cosine checks that the proportional ratios match — if Sample A is 60% cocaine and
+                    Sample B is 30% cocaine, their cosine will be lower even if everything else is the
+                    same. Euclidean additionally penalises the absolute proportional gap. Together they
+                    require a sample pair to look like the same product made to the same formula.
+                </p>
+                <p>
+                    TF-IDF is kept at 0.15 rather than removed. Rare substance co-occurrence still
+                    contributes to the joint score — if two samples share an unusual trace marker as
+                    well as matching proportions, that strengthens the link. TF-IDF is simply not
+                    the primary driver here; Cosine and Euclidean do the heavy lifting.
+                    Jaccard is also kept low (0.15) because at this stage we are less interested
+                    in which substances are present and more interested in how much of each.
+                </p>
+                <p>
+                    The high threshold (0.70) means only the very strongest matches survive.
+                    Edges that appear in this view but not in Source Map are samples that share
+                    substances but in very different proportions — possibly different stages of
+                    cutting or dilution. Edges that survive <em>both</em> presets are the most
+                    compelling linkage candidates.
+                </p>
+            </div>
+            <div class="info-box">
+                <strong>What to look for</strong>
+                Compare the graph here with Source Map. Clusters that shrink dramatically
+                suggest the source-map family shares substance fingerprints but the product
+                was not produced to a consistent formulation — different cutting ratios,
+                different batches. Clusters that remain tight are the strongest same-batch
+                candidates.
+            </div>
+        </section>
+
+        <section class="section" id="preset-trace">
+            <div class="metric-card purple">
+                <span class="metric-tag tag-purple">Trace Markers</span>
+                <h3>Rare substance linking — hidden connections via unusual markers</h3>
+                <p>
+                    <strong>Weights:</strong> TF-IDF 0.60 · Jaccard 0.20 · Cosine 0.10 · Euclidean 0.10 · Threshold 0.50
+                </p>
+                <p>
+                    TF-IDF reweights every substance in inverse proportion to how commonly it
+                    appears across the dataset. A substance present in 80% of samples — such as
+                    caffeine in a heroin dataset — contributes almost nothing to the TF-IDF score.
+                    A substance present in only 5 samples contributes greatly.
+                </p>
+                <p>
+                    The forensic rationale is that <strong>rare substances are more informative
+                    about origin</strong>. Any laboratory can add caffeine as a diluent. Far fewer
+                    will produce a sample containing a specific alkaloid impurity at trace levels —
+                    that is a marker of the raw material source or the specific synthesis route.
+                    TF-IDF amplifies exactly this signal.
+                </p>
+                <p>
+                    As a result, two samples may appear unrelated under Source Map or Batch Match
+                    — perhaps because they look different on the surface — yet score highly here
+                    because they share a rare impurity. This can reveal connections across
+                    different apparent product types or time periods that blunt analysis misses entirely.
+                </p>
+                <p>
+                    Cosine and Euclidean are kept low (0.10 each) rather than zero, to prevent
+                    pairs that only share a common analytical artefact from dominating the results.
+                    Jaccard at 0.20 provides a secondary anchor on the substance set.
+                </p>
+            </div>
+            <div class="info-box">
+                <strong>What to look for</strong>
+                Edges that appear here but were absent in Source Map and Batch Match. These are
+                the most analytically interesting links — two samples that appear superficially
+                different but share an unusual trace marker. Use the chemical filter set to
+                <em>Impurities</em> alongside this preset to focus on the most forensically
+                significant substance category.
+            </div>
+        </section>
+
+        <section class="section" id="preset-equal">
+            <div class="metric-card">
+                <span class="metric-tag tag-blue">Equal Weights</span>
+                <h3>Balanced overview — no prior assumptions about what matters</h3>
+                <p>
+                    <strong>Weights:</strong> All 0.25 · Threshold 0.50
+                </p>
+                <p>
+                    Equal weights means no single aspect of the profile is privileged. A pair
+                    must score reasonably well across all four dimensions to appear as an edge.
+                    This is the most conservative of the presets in one sense — a sample pair
+                    can score highly under Source Map by virtue of Jaccard alone, but under
+                    Equal Weights it must also hold up on profile shape and proportional similarity.
+                </p>
+                <p>
+                    Equal Weights is useful as a <strong>neutral reference</strong>: if a pair
+                    appears under Source Map but not here, it is being driven almost entirely by
+                    Jaccard — the substance sets overlap but the concentrations and profiles are
+                    quite different. If a pair appears under Batch Match but not here, the strong
+                    Cosine/Euclidean match is pulling it above threshold but Jaccard or TF-IDF
+                    are weak.
+                </p>
+                <p>
+                    It is also the appropriate starting point when you have no prior knowledge
+                    about the dataset and do not yet know which aspect of the profiles is most
+                    variable or most informative.
+                </p>
+            </div>
+            <div class="info-box">
+                <strong>What to look for</strong>
+                Use Equal Weights as a sanity check. A pair that scores consistently across
+                all four presets is a genuinely strong candidate for common origin. A pair
+                that only appears under one specific preset tells you something important
+                about <em>what</em> is driving the apparent similarity.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ── Chemical Categories ────────────────────────────── -->
+        <section class="section" id="chem-categories">
+            <span class="section-tag">Chemical Categories</span>
+            <h2>Substance Roles in Drug Samples</h2>
+            <p>
+                Each substance detected in a sample is assigned a role based on a reference
+                dictionary. Understanding these roles helps interpret what a high similarity
+                score actually means forensically.
+            </p>
+        </section>
+
+        <div class="chem-grid">
+
+            <div class="chem-card" id="chem-active">
+                <h3><span class="chem-dot dot-active"></span>Active Ingredient</h3>
+                <p>
+                    The principal psychoactive substance the drug is sold as (e.g. cocaine,
+                    MDMA, heroin). Usually present in the highest proportion.
+                </p>
+                <p>
+                    High similarity driven by the active ingredient indicates matching
+                    purity levels and is consistent with a common source, but active
+                    ingredients alone are insufficient to establish linkage — adulterants
+                    and impurities provide stronger discrimination.
+                </p>
+            </div>
+
+            <div class="chem-card" id="chem-adulterant">
+                <h3><span class="chem-dot dot-adulterant"></span>Adulterant</h3>
+                <p>
+                    Substances deliberately added to enhance or mimic drug effects, or
+                    to increase bulk without losing the psychoactive impression. Common
+                    examples include levamisole in cocaine and caffeine in MDMA.
+                </p>
+                <p>
+                    Shared adulterants can be a strong indicator of common supply,
+                    particularly when the adulterant is uncommon or present in similar
+                    proportions.
+                </p>
+            </div>
+
+            <div class="chem-card" id="chem-diluent">
+                <h3><span class="chem-dot dot-diluent"></span>Diluent / Filler</h3>
+                <p>
+                    Inert or low-activity substances used to bulk out a sample and reduce
+                    costs. Examples include sugars, starch, and paracetamol.
+                </p>
+                <p>
+                    Shared diluents have lower forensic significance than shared adulterants
+                    or impurities, as they are widely available and commonly used across
+                    many supply chains.
+                </p>
+            </div>
+
+            <div class="chem-card" id="chem-precursor">
+                <h3><span class="chem-dot dot-precursor"></span>Precursor</h3>
+                <p>
+                    Chemicals used in the synthesis of the active ingredient that remain
+                    as trace residues. Their presence can indicate the synthetic route
+                    used and potentially the source laboratory.
+                </p>
+                <p>
+                    Shared precursors are a strong indicator of common manufacturing
+                    origin and should be prioritised in linkage analysis.
+                </p>
+            </div>
+
+            <div class="chem-card" id="chem-impurity">
+                <h3><span class="chem-dot dot-impurity"></span>Impurity / Route Marker</h3>
+                <p>
+                    By-products and degradation products formed during synthesis or storage.
+                    They are characteristic of specific synthetic routes, equipment, or
+                    storage conditions.
+                </p>
+                <p>
+                    Route markers are highly valuable forensically because they reflect
+                    manufacturing conditions and are difficult to control deliberately.
+                    Shared impurity profiles are a strong indicator of common origin.
+                </p>
+            </div>
+
+            <div class="chem-card" id="chem-artefact">
+                <h3><span class="chem-dot dot-artefact"></span>Analytical Artefact</h3>
+                <p>
+                    Substances that arise from the analytical process itself (e.g.
+                    derivatisation agents, column bleed, instrument contaminants) rather
+                    than being genuinely present in the sample.
+                </p>
+                <p>
+                    Artefacts have no forensic significance for linkage and should not
+                    be used to interpret similarity. Similarity driven primarily by
+                    artefacts should be treated with caution.
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="divider">
+
+        <!-- ── Methodology ───────────────────────────────────── -->
+        <section class="section" id="method-overview">
+            <span class="section-tag">Investigative Methodology</span>
+            <h2>Recommended Investigative Approach</h2>
+            <p>
+                Browsing the graph and following hunches has genuine value, but a structured
+                sequence of analysis steps is more likely to surface meaningful intelligence
+                and less likely to miss significant connections. The four workflows below
+                represent a layered approach: start broad, confirm, then look deeper.
+            </p>
+            <p>
+                Two overarching goals drive the analysis:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li><strong>Common source identification</strong> — samples with similar profiles may share a clandestine laboratory, synthesis batch, or supply chain.</li>
+                <li><strong>Outlier characterisation</strong> — samples with unique profiles may represent a novel laboratory, an unusual supply route, or a one-off seizure.</li>
+            </ul>
+            <div class="info-box">
+                <strong>Recommended sequence</strong>
+                Workflow 1 (Map) → Workflow 2 (Confirm) → Workflow 3 (Trace) → Workflow 4 (Outliers) → Export.
+                Each step uses the previous one as context. You can run them in any order, but
+                this sequence is designed to move from broad intelligence to specific leads.
+            </div>
+            <div class="info-box warning">
+                <strong>Threshold calibration and ROC/AUC</strong>
+                In published forensic research (Morelato 2015; Michelot 2017), the similarity
+                threshold is formally optimised using <strong>ROC/AUC analysis</strong> — a
+                statistical technique that finds the threshold at which the rate of correctly
+                identified linked pairs is maximised relative to false positives, using a set of
+                known ground-truth links as a reference. FSIS does not implement ROC/AUC because
+                it operates without pre-labelled data. The manual threshold you set is performing
+                the same function intuitively: start at 0.5 (the midpoint), then move it based
+                on whether the resulting graph looks too dense (raise it) or too sparse (lower it).
+                Pairs that are strong intelligence leads under multiple presets are the operational
+                equivalent of samples that score above threshold across multiple ROC-optimal metrics.
+            </div>
+        </section>
+
+        <section class="section" id="method-1">
+            <div class="metric-card green">
+                <span class="metric-tag tag-green">Workflow 1</span>
+                <h3>Map the Landscape</h3>
+                <p><em>Goal: understand the broad cluster structure before drilling down.</em></p>
+            </div>
+
+            <h3>Steps</h3>
+            <ol style="padding-left:20px; color:#445566; margin-bottom:14px;">
+                <li style="margin-bottom:8px;">Load the dataset. Apply the <strong>Source Map</strong> preset (Jaccard-heavy, threshold 0.45). This casts a wide net across the full sample set.</li>
+                <li style="margin-bottom:8px;">Observe the overall shape of the graph. Note the number and size of clusters, and how many samples are isolated (no connections).</li>
+                <li style="margin-bottom:8px;">Click <strong>Network Analysis</strong> and open the Community Detection tab. Run <strong>Louvain</strong> and compare its communities with the coloured clusters in the graph. Agreement between the visual layout and the algorithm-derived partition gives confidence that the groupings are real rather than a layout artefact. Where they disagree — a sample the algorithm assigns to one community but that appears visually isolated — investigate further.</li>
+                <li style="margin-bottom:8px;">In the Centrality tab, review the <strong>Betweenness</strong> ranking. Samples with high betweenness sit on the path between cluster families — they are structurally <em>bridge nodes</em>. These are strong candidates for Workflow 4: they may represent redistribution points, transitional cutting stages, or samples that chemically straddle two supply chain arms.</li>
+                <li style="margin-bottom:8px;">Switch to <strong>Equal Weights</strong> and compare. Clusters that survive both presets are more robustly linked — similarity is consistent across all metric types, not just shared substance sets.</li>
+                <li style="margin-bottom:8px;">Click into the largest clusters. Use Ctrl+Click to select multiple nodes within a cluster and review the <em>In ALL selected samples</em> list in the drawer — these are the substances defining that cluster's shared fingerprint.</li>
+                <li style="margin-bottom:8px;">Note any isolates — samples with no connections. These are candidates for Workflow 4.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>What you learn</strong>
+                The coarse supply structure of the dataset. Which samples belong to the same
+                chemical family, how many distinct groupings exist, which samples stand
+                apart from all others, and — via betweenness centrality — which samples
+                are structurally important connectors between groups.
+            </div>
+        </section>
+
+        <section class="section" id="method-2">
+            <div class="metric-card orange">
+                <span class="metric-tag tag-orange">Workflow 2</span>
+                <h3>Find the Definitive Links</h3>
+                <p><em>Goal: within a cluster, confirm which pairs are likely the same batch or laboratory.</em></p>
+            </div>
+
+            <h3>Steps</h3>
+            <ol style="padding-left:20px; color:#445566; margin-bottom:14px;">
+                <li style="margin-bottom:8px;">Apply the <strong>Batch Match</strong> preset (Cosine + Euclidean dominant, TF-IDF secondary, threshold 0.70). Most clusters will thin — only the tightest-proportion matches survive.</li>
+                <li style="margin-bottom:8px;">The remaining edges are your strongest intelligence leads: same substances <em>and</em> similar proportions. These pairs are candidates for same-batch or same-laboratory origin.</li>
+                <li style="margin-bottom:8px;">Click <strong>Network Analysis</strong> and check the <strong>Eigenvector Centrality</strong> ranking. The top-ranked samples are the most deeply embedded in the densest cluster — connected to other highly connected samples. In a supply chain context these are the core product samples most characteristic of the primary source. Prioritise these for detailed case development.</li>
+                <li style="margin-bottom:8px;">Use the chemical filter in <strong>ALL mode</strong> with the key adulterant or diluent you identified in Workflow 1. This confirms: do all linked samples in the cluster actually contain that defining substance combination?</li>
+                <li style="margin-bottom:8px;">Compare which cluster edges survive Batch Match versus which were present only under Source Map. Source-Map-only edges share substances but at very different proportions — possibly different cutting stages, different batches from the same supplier, or coincidental overlap.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>What you learn</strong>
+                Which relationships within a cluster are likely same-batch versus same-lab-different-batch.
+                Pairs that survive both Source Map and Batch Match are the most compelling
+                linkage candidates for further investigation. Eigenvector centrality identifies
+                the most representative samples of the dominant cluster.
+            </div>
+        </section>
+
+        <section class="section" id="method-3">
+            <div class="metric-card purple">
+                <span class="metric-tag tag-purple">Workflow 3</span>
+                <h3>Hunt the Trace Markers</h3>
+                <p><em>Goal: find hidden links through rare impurities that common-substance noise buries.</em></p>
+            </div>
+
+            <h3>Steps</h3>
+            <ol style="padding-left:20px; color:#445566; margin-bottom:14px;">
+                <li style="margin-bottom:8px;">Before computing, enable the <strong>√ Square Root Pre-treatment</strong> checkbox in the sidebar. This applies a square root transform to all substance concentrations before any metric is calculated, compressing dominant peaks and amplifying the relative contribution of trace impurities. Both Morelato (2015) and Michelot (2017) recommend this transform specifically for impurity-based comparison — it is the single most impactful pre-processing step for rare-marker analysis. Click <strong>Compute</strong> after enabling it.</li>
+                <li style="margin-bottom:8px;">Apply the <strong>Trace Markers</strong> preset (TF-IDF dominant, threshold 0.50). Because sqrt pre-treatment has already amplified the impurity signal, you may find that the threshold can be raised slightly (e.g. to 0.55–0.60) without losing meaningful connections.</li>
+                <li style="margin-bottom:8px;">Apply the chemical filter: select the <strong>Impurities</strong> category using ANY mode. This removes samples with no impurity data from the graph, focusing attention on samples where rare markers are present.</li>
+                <li style="margin-bottom:8px;">Look specifically for edges that are <em>new in this view</em> — connections that did not appear under Source Map or Batch Match. These are pairs linked via rare substance markers rather than dominant components.</li>
+                <li style="margin-bottom:8px;">Click each such pair and inspect their profiles. Identify which rare substance is the shared signal. A shared impurity at 0.5% can be more forensically probative than shared caffeine at 40%.</li>
+                <li style="margin-bottom:8px;">Also look for previously isolated samples that now gain connections — these are samples whose dominant substances made them look unique, but which share a trace marker with another sample or cluster.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>What you learn</strong>
+                Subtle connections missed by broad analysis. A shared manufacturing impurity
+                or rare alkaloid can link samples across different apparent product types,
+                geographic areas, or time periods. These are often the most forensically
+                significant findings.
+            </div>
+        </section>
+
+        <section class="section" id="method-4">
+            <div class="metric-card">
+                <span class="metric-tag tag-blue">Workflow 4</span>
+                <h3>Characterise the Outliers</h3>
+                <p><em>Goal: understand why isolated samples are unique, and whether they connect to anything at low similarity.</em></p>
+            </div>
+
+            <h3>Steps</h3>
+            <ol style="padding-left:20px; color:#445566; margin-bottom:14px;">
+                <li style="margin-bottom:8px;">Return to <strong>Source Map</strong> or <strong>Equal Weights</strong>. Note the samples that are isolated (no connections above the threshold).</li>
+                <li style="margin-bottom:8px;">Click each isolate and inspect its chemical profile. Is it unusual because of: (a) high purity with few diluents, (b) a unique adulterant combination not seen elsewhere, or (c) simply a different expected substance from the rest of the dataset?</li>
+                <li style="margin-bottom:8px;">Use the chemical filter in <strong>ALL mode</strong>: select the True Substance plus one unusual adulterant specific to that isolate. If nothing else matches, the sample is genuinely chemically unique in this dataset.</li>
+                <li style="margin-bottom:8px;">Lower the threshold gradually (e.g. to 0.30). Does the isolate now connect to anything? If it connects at low threshold, examine that near-neighbour — the two samples share something, but at a lower similarity than the main clusters. This may represent a more distant supply chain relationship.</li>
+                <li style="margin-bottom:8px;">Apply <strong>Trace Markers</strong> and check again — an isolate that gains a connection only under TF-IDF is linked via a rare marker, which may indicate a forensically interesting relationship not visible at the surface level.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>What you learn</strong>
+                Whether an outlier represents a genuinely novel laboratory, a unique
+                seizure from a known supply chain at an unusual purity level, or a
+                sample where the dominant substances happen to be different from the
+                rest of the dataset but which shares trace markers with a known cluster.
+            </div>
+        </section>
+
+        <section class="section" id="method-filters">
+            <h2>Chemical Filter: Recommended Order of Analysis</h2>
+            <p>
+                The chemical filter restricts the graph to samples containing specific substances.
+                The order in which you apply substance categories affects what you see and how
+                interpretable the results are. The following order is recommended, moving from
+                the most discriminating to the least.
+            </p>
+
+            <table>
+                <thead>
+                    <tr><th>Order</th><th>Category</th><th>Why this order</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1st</strong></td>
+                        <td>Adulterants</td>
+                        <td>Deliberately chosen by the producer — the most discriminating indicator of supply chain. Shared uncommon adulterants are a strong common-source signal.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2nd</strong></td>
+                        <td>Impurities</td>
+                        <td>Manufacturing-specific traces that are difficult to control deliberately. Shared impurity profiles are the strongest available provenance evidence.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3rd</strong></td>
+                        <td>Diluents</td>
+                        <td>Broad source differentiation. Common diluents (paracetamol, sugars) are too widespread to be specific, but unusual diluents can help narrow down a supply chain.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4th</strong></td>
+                        <td>Substitutes</td>
+                        <td>Useful for identifying supply chain variation — a substitute active ingredient may indicate a different precursor source or synthesis pathway.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last</strong></td>
+                        <td>True Substance</td>
+                        <td>Least discriminating within a single-drug dataset — most samples contain the same active ingredient. More useful when the dataset spans multiple drug types.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ANY vs ALL mode</h3>
+            <p>
+                The filter toggle between <strong>ANY</strong> and <strong>ALL</strong> controls the logic applied when multiple substances are selected:
+            </p>
+            <ul style="padding-left:20px; color:#445566; margin-bottom:12px;">
+                <li style="margin-bottom:6px;"><strong>ANY</strong> (OR logic) — keeps samples containing at least one of the selected substances. Use for broad intelligence: <em>which samples involve any of these substances?</em></li>
+                <li style="margin-bottom:6px;"><strong>ALL</strong> (AND logic) — keeps only samples containing every selected substance simultaneously. Use for definitive linkage: <em>which samples share this exact combination?</em></li>
+            </ul>
+            <div class="info-box">
+                <strong>Practical tip</strong>
+                Start with ANY to identify the population of interest, then switch to ALL
+                with a specific substance combination to find the tightest matches within
+                that population. A cluster that survives ALL-mode filtering on a rare
+                adulterant + impurity combination is a very strong common-source candidate.
+            </div>
+        </section>
+
+        <section class="section" id="method-export">
+            <div class="metric-card teal">
+                <span class="metric-tag tag-teal">Workflow 5</span>
+                <h3>Export and Further Analysis</h3>
+                <p><em>Goal: formalise findings and take them into dedicated tools for reporting or deeper network analysis.</em></p>
+            </div>
+
+            <p>
+                Once the four analytical workflows are complete and the most significant
+                clusters, links, and outliers have been identified, the current graph can
+                be exported for further work outside FSIS.
+            </p>
+
+            <h3>Steps</h3>
+            <ol style="padding-left:20px; color:#445566; margin-bottom:14px;">
+                <li style="margin-bottom:8px;">Set the final graph state you want to export: choose the preset (or custom weights), threshold, and any active chemical or year filters that best represent your analytical conclusions.</li>
+                <li style="margin-bottom:8px;">Click <strong>Export GraphML</strong>. This downloads a <code>.graphml</code> file containing every node (sample) and edge (link above threshold), with centrality scores, metadata, and joint similarity values pre-attached as attributes.</li>
+                <li style="margin-bottom:8px;">Open the file in <strong>Gephi</strong> for publication-quality layout and visual reporting. Run ForceAtlas 2 to separate clusters, colour nodes by a metadata field (e.g. expected substance or seizure year), and scale edge thickness by <code>joint_similarity</code>. Export as SVG or PDF for inclusion in intelligence reports.</li>
+                <li style="margin-bottom:8px;">For quantitative reporting, load the file in <strong>Python/NetworkX</strong>: <code>G = nx.read_graphml("file.graphml")</code>. From here you can run additional statistical analysis — for example Spearman correlation between centrality scores and metadata fields, or hierarchical clustering on the joint similarity matrix — that goes beyond what FSIS provides directly.</li>
+                <li style="margin-bottom:8px;">Consider running separate exports for each preset (Source Map, Batch Match, Trace Markers) and comparing them in Gephi as separate graph layers. Edges that appear in all three exports are the most robustly supported links in the dataset — the operational equivalent of surviving multiple similarity metrics in ROC/AUC evaluation.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>What you learn</strong>
+                An exportable, attributed graph that captures the full analytical state at the
+                moment of export. The centrality scores pre-computed in the file provide an
+                immediate ranking of sample importance without needing to re-run the analysis
+                in an external tool. Comparing exports across presets in a tool like Gephi
+                provides a rigorous multi-metric view of linkage confidence.
+            </div>
+            <div class="info-box warning">
+                <strong>Note on statistical thresholds</strong>
+                Published forensic studies (Morelato 2015; Michelot 2017) formally determine
+                optimal similarity thresholds using ROC/AUC on labelled datasets where links
+                between seizures are known. If you have access to confirmed case links
+                (e.g. seizures known to be from the same laboratory), you can use those as a
+                reference to evaluate whether the FSIS threshold and weights correctly identify
+                them. Pairs that score above threshold across multiple presets and survive
+                the Trace Markers workflow represent the closest operational equivalent to
+                a formally validated link.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ── Using the App ──────────────────────────────────── -->
+        <section class="section" id="using-graph">
+            <span class="section-tag">Using the App</span>
+            <h2>Network Graph</h2>
+            <p>
+                The network graph displays all samples as nodes. An edge (line) between two
+                nodes means their Joint Similarity is at or above the threshold. Nodes are
+                coloured by cluster — all samples in the same connected component share a colour.
+            </p>
+
+            <table>
+                <thead>
+                    <tr><th>Action</th><th>Effect</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Scroll</td><td>Zoom in / out</td></tr>
+                    <tr><td>Drag background</td><td>Pan the graph</td></tr>
+                    <tr><td>Click a node</td><td>Open chemical profile panel</td></tr>
+                    <tr><td>Ctrl + Click nodes</td><td>Select multiple nodes for comparison</td></tr>
+                    <tr><td>Rotate buttons (toolbar)</td><td>Rotate the graph layout 15° per click</td></tr>
+                </tbody>
+            </table>
+
+            <p>
+                Node size scales with the number of connections (degree). A large node
+                has many similar neighbours; an isolated small node has none above the threshold.
+            </p>
+        </section>
+
+        <section class="section" id="using-node">
+            <h2>Inspecting a Sample</h2>
+            <p>
+                Clicking any node opens the sample detail panel on the right. This shows:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li>Sample metadata (physical form, date, expected substance)</li>
+                <li>Number of connections in the current graph</li>
+                <li>A bar chart of all detected substances and their percentages</li>
+            </ul>
+            <p>
+                The bar chart only shows substances with a detected value above zero.
+                Substances are sorted by proportion, largest first.
+            </p>
+        </section>
+
+        <section class="section" id="using-compare">
+            <h2>Comparing Multiple Samples</h2>
+            <p>
+                Hold <strong>Ctrl</strong> and click two or more nodes to select them.
+                Selected nodes are highlighted in orange. A summary panel appears at the
+                bottom of the screen showing:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li><strong>In ALL selected samples</strong> — substances present in every selected sample</li>
+                <li><strong>In SOME selected samples</strong> — substances present in at least one but not all</li>
+                <li><strong>Not in any selected</strong> — substances common elsewhere in the dataset but absent from all selected samples</li>
+            </ul>
+            <p>
+                Each substance entry shows the sample name (orange label) and its percentage
+                in that sample. This allows direct comparison of proportions across samples.
+            </p>
+        </section>
+
+        <section class="section" id="using-interpret">
+            <h2>Interpreting Results</h2>
+            <p>
+                A high Joint Similarity score indicates that two samples have closely
+                matching chemical profiles. The forensic interpretation depends on
+                <em>what is driving</em> that similarity:
+            </p>
+
+            <table>
+                <thead>
+                    <tr><th>Primary driver</th><th>Forensic significance</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Shared active ingredient + impurities</td>
+                        <td>Strong — consistent with common manufacturing origin</td>
+                    </tr>
+                    <tr>
+                        <td>Shared adulterants</td>
+                        <td>Moderate — may indicate common supplier or batch</td>
+                    </tr>
+                    <tr>
+                        <td>Shared precursors / route markers</td>
+                        <td>Strong — suggests same synthetic route or laboratory</td>
+                    </tr>
+                    <tr>
+                        <td>Shared diluents only</td>
+                        <td>Low — diluents are widely available and non-specific</td>
+                    </tr>
+                    <tr>
+                        <td>Shared analytical artefacts</td>
+                        <td>None — not forensically meaningful</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box warning">
+                <strong>Important</strong>
+                Chemical similarity is one line of evidence. It should always be
+                considered alongside temporal proximity, geographic context, and
+                other intelligence before operational conclusions are drawn.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ── Network Analysis ──────────────────────────────── -->
+        <section class="section" id="using-network-analysis">
+            <span class="section-tag">Using the App</span>
+            <h2>Network Analysis</h2>
+            <p>
+                The <strong>Network Analysis</strong> button (below the graph statistics in the
+                sidebar) opens a panel that runs two classes of computation on the current graph:
+                <em>centrality measures</em> and <em>community detection</em>. Both operate on
+                whatever graph is currently displayed — the active threshold, weight settings,
+                and chemical/year filters all apply.
+            </p>
+
+            <h3>Centrality Measures</h3>
+            <p>
+                Centrality scores rank samples by their structural importance within the similarity
+                network. Three measures are computed simultaneously.
+            </p>
+
+            <div class="metric-card">
+                <span class="metric-tag tag-blue">Degree Centrality</span>
+                <h3>How many samples is this one connected to?</h3>
+                <p>
+                    Degree centrality is the proportion of all other samples in the graph to which
+                    a given sample is directly connected (has an edge above the threshold).
+                    A score of 1.0 would mean a sample is connected to every other sample.
+                </p>
+                <p>
+                    <strong>Forensic interpretation:</strong> high-degree samples are chemically
+                    similar to many others — consistent with widely distributed product from a
+                    central supply chain. A sample with unusually high degree in a Trace Markers
+                    view warrants particular attention: it shares rare impurities with many others.
+                </p>
+            </div>
+
+            <div class="metric-card green">
+                <span class="metric-tag tag-green">Betweenness Centrality</span>
+                <h3>Does this sample sit on the path between clusters?</h3>
+                <p>
+                    Betweenness centrality measures how often a sample lies on the shortest path
+                    between every other pair of samples in the network. A sample with high
+                    betweenness is a <em>bridge node</em> — it links otherwise separate parts
+                    of the graph.
+                </p>
+                <p>
+                    <strong>Forensic interpretation:</strong> a bridge sample may represent a
+                    transitional product — something at an intermediate cutting stage, a
+                    redistribution point in the supply chain, or a sample that chemically
+                    connects two otherwise distinct laboratory clusters. These are often the
+                    most analytically interesting samples to examine in detail.
+                </p>
+            </div>
+
+            <div class="metric-card orange">
+                <span class="metric-tag tag-orange">Eigenvector Centrality</span>
+                <h3>Is this sample connected to other well-connected samples?</h3>
+                <p>
+                    Eigenvector centrality extends degree centrality by weighting a sample's
+                    connections by how central those neighbours are. Being connected to
+                    high-degree samples scores higher than being connected to isolated ones.
+                    This is the same principle used by PageRank in web search.
+                </p>
+                <p>
+                    <strong>Forensic interpretation:</strong> samples with high eigenvector
+                    centrality sit at the heart of the most densely connected part of the network.
+                    In a supply chain context, these are the samples most deeply embedded in
+                    the dominant cluster — candidates for the core product from the primary
+                    source in the dataset.
+                </p>
+            </div>
+
+            <h3>Community Detection</h3>
+            <p>
+                Community detection algorithms partition the graph into groups (communities) of
+                samples that are more densely connected to each other than to the rest of the
+                network. Four algorithms are available, each using a different strategy.
+                Results are presented in tabs; the <strong>modularity</strong> score shown for
+                each algorithm measures how well-separated the communities are (0 = no structure,
+                1 = perfect separation — values above 0.3 are generally considered meaningful).
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Approach</th>
+                        <th>When it is most useful</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Louvain</strong></td>
+                        <td>Iteratively merges nodes to maximise modularity. Fast and widely used.</td>
+                        <td>General-purpose starting point. Deterministic (seeded) in FSIS, so results are reproducible.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Greedy Modularity</strong></td>
+                        <td>Agglomerative — starts with each node as its own community and merges greedily.</td>
+                        <td>Often produces fewer, larger communities than Louvain. Good for identifying the coarsest supply chain structure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Label Propagation</strong></td>
+                        <td>Each node adopts the majority label of its neighbours, iterated to convergence.</td>
+                        <td>Very fast. Stochastic — results may vary slightly between runs. Compare with Louvain as a sanity check.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Girvan-Newman</strong></td>
+                        <td>Removes the edge with the highest betweenness centrality first, then repeats. Deterministic.</td>
+                        <td>Only runs on graphs with 200 or fewer nodes (performance limit). Best for finding the single most important split in a smaller dataset.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>Practical tip</strong>
+                Community detection groups are not the same as the coloured connected components
+                in the main graph — those reflect direct connectivity above the threshold,
+                while communities reflect denser-than-average internal linkage, which may
+                cross component boundaries at low thresholds. Compare Louvain communities
+                with the visual clusters in the graph: disagreements are analytically interesting.
+            </div>
+            <div class="info-box warning">
+                <strong>Graph dependency</strong>
+                Network Analysis operates on the current graph state. Changing the threshold,
+                weights, or chemical filter and recomputing will change the graph — and therefore
+                the centrality rankings and community assignments. Always note which settings
+                were active when interpreting results.
+            </div>
+        </section>
+
+        <!-- ── GraphML Export ─────────────────────────────────── -->
+        <section class="section" id="using-export-graphml">
+            <h2>GraphML Export</h2>
+            <p>
+                The <strong>Export GraphML</strong> button downloads the current graph as a
+                <code>.graphml</code> file — a standard XML-based graph format supported by
+                most network analysis and visualisation tools. The export reflects the graph
+                as it stands at the moment of clicking: the active threshold, metric weights,
+                chemical filter, and year range all apply.
+            </p>
+
+            <h3>What is included</h3>
+
+            <table>
+                <thead>
+                    <tr><th>Attribute</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="3" style="background:#f8fafc; font-size:11px; font-weight:700; color:#6a8aa8; text-transform:uppercase; letter-spacing:0.5px;">Node attributes</td></tr>
+                    <tr><td><code>id</code></td><td>string</td><td>Sample identifier (as loaded from the dataset)</td></tr>
+                    <tr><td><code>degree</code></td><td>integer</td><td>Number of edges (connections above threshold)</td></tr>
+                    <tr><td><code>degree_centrality</code></td><td>float</td><td>Proportion of other nodes connected to this one</td></tr>
+                    <tr><td><code>betweenness_centrality</code></td><td>float</td><td>Normalised betweenness — how often this node bridges others</td></tr>
+                    <tr><td><code>eigenvector_centrality</code></td><td>float</td><td>Centrality weighted by neighbour centrality</td></tr>
+                    <tr><td><em>metadata columns</em></td><td>string</td><td>All columns from the sample metadata file (date, expected substance, physical form, etc.)</td></tr>
+                    <tr><td colspan="3" style="background:#f8fafc; font-size:11px; font-weight:700; color:#6a8aa8; text-transform:uppercase; letter-spacing:0.5px;">Edge attributes</td></tr>
+                    <tr><td><code>joint_similarity</code></td><td>float</td><td>Joint Similarity score between the two connected samples (0–1)</td></tr>
+                    <tr><td colspan="3" style="background:#f8fafc; font-size:11px; font-weight:700; color:#6a8aa8; text-transform:uppercase; letter-spacing:0.5px;">Graph attributes</td></tr>
+                    <tr><td><code>threshold</code></td><td>float</td><td>The threshold value active at export time</td></tr>
+                    <tr><td><code>dataset</code></td><td>string</td><td>Name of the loaded dataset</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Compatible tools</h3>
+            <p>
+                The exported file can be opened directly in:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;"><strong>Gephi</strong> — open-source network visualisation and analysis platform. Supports layout algorithms (ForceAtlas2, Fruchterman-Reingold), filtering by attribute, and community colouring. File → Open.</li>
+                <li style="margin-bottom:6px;"><strong>Cytoscape</strong> — widely used in life sciences network analysis. Supports visual styles, attribute-driven filtering, and plugin ecosystem. File → Import → Network from File.</li>
+                <li style="margin-bottom:6px;"><strong>NetworkX (Python)</strong> — <code>G = nx.read_graphml("file.graphml")</code> loads the graph with all attributes for further analysis in code.</li>
+                <li style="margin-bottom:6px;"><strong>yEd</strong> — lightweight graph editor from yWorks. Open directly; use Layout menu to arrange nodes.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Gephi quickstart</strong>
+                After opening the file: run <em>Layout → ForceAtlas 2</em> to separate clusters,
+                then go to <em>Appearance → Nodes → Colour → Partition</em> and partition by
+                a metadata field to colour by known grouping. Use
+                <em>Data Laboratory</em> to inspect centrality scores per node.
+                Edge weight (<code>joint_similarity</code>) can be used to scale edge thickness
+                via <em>Appearance → Edges → Size → Ranking → joint_similarity</em>.
+            </div>
+            <div class="info-box warning">
+                <strong>Isolated nodes</strong>
+                Samples with no connections above the current threshold are included as isolated
+                nodes in the exported graph. They carry all node attributes but have no edges.
+                Some tools hide isolated nodes by default — check your filter settings if
+                some samples appear to be missing.
+            </div>
+        </section>
+
+        <!-- ── Analytics Overview ────────────────────────────────── -->
+        <section class="section" id="using-analytics">
+            <h2>Analytics</h2>
+            <p>
+                The <strong>Analytics</strong> button opens a four-tab panel that provides
+                statistical context beyond the main network graph. All four tabs operate on
+                the <em>current graph state</em> — the dataset, threshold, metric weights,
+                chemical filter, and year range that were active when you last clicked
+                <strong>Compute</strong>. Clicking Analytics before Compute will show an
+                empty or stale view; always compute first.
+            </p>
+            <div class="info-box">
+                <strong>Filter-aware</strong>
+                If you have a chemical filter active and click Compute, the Analytics results
+                reflect only the filtered sample set. This lets you compare subsets of your data
+                in isolation — for example, isolating samples that contain a particular cutting
+                agent and then examining how that cohort clusters over time.
+            </div>
+        </section>
+
+        <!-- ── Metric Comparison ─────────────────────────────────── -->
+        <section class="section" id="using-analytics-metrics">
+            <h2>Metric Comparison</h2>
+            <p>
+                The <strong>Metric Comparison</strong> tab runs each similarity metric in
+                isolation — and then the joint equal-weight combination — at the current
+                threshold and reports the resulting graph structure. This tells you how
+                sensitive your conclusions are to the choice of metric.
+            </p>
+
+            <h3>What the table shows</h3>
+            <table>
+                <thead>
+                    <tr><th>Column</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Configuration</strong></td><td>The metric being tested (Cosine only, Jaccard only, Euclidean only, TF-IDF only, Pearson only, Joint equal weights). The row matching your current joint settings is highlighted.</td></tr>
+                    <tr><td><strong>Edges</strong></td><td>Number of pairs above the threshold under this metric.</td></tr>
+                    <tr><td><strong>Clusters</strong></td><td>Number of connected components with more than one node.</td></tr>
+                    <tr><td><strong>Isolates</strong></td><td>Samples with no connections above the threshold — the "loners" in the network.</td></tr>
+                    <tr><td><strong>Largest cluster %</strong></td><td>The fraction of all samples that fall into the single biggest cluster. High values indicate a dominant supercluster.</td></tr>
+                    <tr><td><strong>Mean similarity</strong></td><td>Average pairwise similarity across all pairs — reflects the overall signal density.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>How to interpret it</h3>
+            <p>
+                Look for <strong>agreement and disagreement</strong> between metrics:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;"><strong>Metrics agree on cluster structure</strong> — the finding is robust; it does not depend on which mathematical lens you apply.</li>
+                <li style="margin-bottom:6px;"><strong>One metric stands apart</strong> — that metric is detecting a signal the others miss. TF-IDF standing apart often means rare-substance links are present that proportion-based metrics smooth over. Jaccard standing apart often means shared presence/absence of substances (regardless of amount) is the dominant signal.</li>
+                <li style="margin-bottom:6px;"><strong>Pearson differs from the rest</strong> — Pearson is sensitive to relative concentration <em>patterns</em>, not just shared substances. Disagreement suggests that some pairs share the same substances but in systematically different proportions.</li>
+            </ul>
+            <div class="info-box">
+                <strong>Use before finalising weights</strong>
+                Run Metric Comparison at your analysis threshold before locking in your
+                weight settings. If one metric is producing a very different cluster count,
+                consider whether its signal is analytically meaningful for your question,
+                and weight accordingly.
+            </div>
+        </section>
+
+        <!-- ── Threshold Sweep ───────────────────────────────────── -->
+        <section class="section" id="using-analytics-sweep">
+            <h2>Threshold Sweep</h2>
+            <p>
+                The <strong>Threshold Sweep</strong> tab plots how graph structure changes as
+                the threshold moves from 0.45 to 0.90, using your current metric weights.
+                A second line shows the same sweep under equal weights for reference.
+                The current threshold is marked with a red dashed vertical line.
+            </p>
+
+            <h3>Reading the chart</h3>
+            <p>
+                The chart has two y-axes:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;"><strong>Left axis (blue line)</strong> — percentage of all samples in the largest cluster. Falling steeply as threshold rises indicates the dataset has one dominant super-cluster at low thresholds that fragments at higher ones.</li>
+                <li style="margin-bottom:6px;"><strong>Right axis (orange line)</strong> — number of distinct clusters. A peak in cluster count at intermediate thresholds is the classic "sweet spot" — enough resolution to separate groups, not so strict that everything fragments into isolates.</li>
+                <li style="margin-bottom:6px;"><strong>Grey lines</strong> — same metrics under equal weights. Divergence between blue and grey lines shows how much your weight choices are shaping the result.</li>
+            </ul>
+
+            <h3>Choosing a threshold</h3>
+            <p>
+                There is no universally correct threshold. Practical guidance:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;">Set the threshold at the point where the cluster-count curve peaks — this maximises discrimination before fragmentation.</li>
+                <li style="margin-bottom:6px;">If the largest-cluster line drops sharply between two thresholds, that gap is where the dominant supercluster breaks apart. Comparing the graph just before and after that threshold reveals which samples are the bridging links.</li>
+                <li style="margin-bottom:6px;">If the cluster count never rises (monotonically decreasing), the data does not support clear discrete groupings — investigate whether a chemical filter would reveal subgroup structure.</li>
+            </ul>
+            <div class="info-box warning">
+                <strong>Sweep uses the current joint similarity matrix</strong>
+                The sweep varies the threshold, not the weights. It does not recompute the
+                joint similarity at each step — it re-applies the current matrix to each
+                threshold. This makes it fast, but it means the sweep result reflects the
+                metric weights that were active at Compute time, not equal weights for
+                the equal-weight line. The equal-weight line is computed from the equal-weight
+                joint matrix computed during the sweep.
+            </div>
+        </section>
+
+        <!-- ── Cluster Profiles ──────────────────────────────────── -->
+        <section class="section" id="using-analytics-clusters">
+            <h2>Cluster Profiles</h2>
+            <p>
+                The <strong>Cluster Profiles</strong> tab generates a chemical fingerprint for
+                each cluster in the current graph — showing which substances are most prevalent,
+                how internally similar the cluster is, and when the samples were collected.
+                Isolates (samples with no connections above the threshold) are listed separately.
+            </p>
+
+            <h3>Cluster cards</h3>
+            <p>Each cluster card shows:</p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;"><strong>Sample count and within-cluster similarity</strong> — the mean pairwise joint similarity among all members. High values (&gt;0.80) indicate a tight, chemically coherent group. Low values (&lt;0.50) suggest the cluster is held together by a few bridging substances rather than an overall similar profile.</li>
+                <li style="margin-bottom:6px;"><strong>Top substances with proportion bars</strong> — each bar shows the fraction of cluster samples in which that substance appears (prevalence), not the concentration. A substance at 100% appears in every sample in the cluster; one at 20% appears in only a fifth.</li>
+                <li style="margin-bottom:6px;"><strong>Year distribution</strong> — shows which calendar years are represented in the cluster. A cluster spanning many years suggests a stable supply chain pattern; a cluster concentrated in a single year may reflect a batch or a short-lived supplier.</li>
+            </ul>
+
+            <h3>Isolate cards</h3>
+            <p>
+                Isolates are samples that have no connections above the current threshold.
+                They appear individually with their top substances. Common reasons for isolation:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;">The sample has an unusual chemical composition that does not match any other sample in the filtered dataset.</li>
+                <li style="margin-bottom:6px;">The sample may be from a different drug category than expected — check the substance list for unexpected primary substances.</li>
+                <li style="margin-bottom:6px;">The threshold is too high — lower it to see whether the isolate connects at a more permissive threshold.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Cluster numbering</strong>
+                Clusters are numbered in descending size order — Cluster 1 is always the
+                largest. Numbering changes when you recompute with different settings.
+                Do not use cluster numbers as stable identifiers across analyses; describe
+                clusters by their chemical composition instead.
+            </div>
+        </section>
+
+        <!-- ── Timeline ──────────────────────────────────────────── -->
+        <section class="section" id="using-analytics-timeline">
+            <h2>Timeline</h2>
+            <p>
+                The <strong>Timeline</strong> tab breaks the dataset down by year of collection,
+                reporting within-year similarity, cluster structure, and cross-year similarity.
+                A stacked bar chart shows how substance composition shifts across years.
+                This tab is most informative when your dataset spans multiple years.
+            </p>
+
+            <h3>Year statistics table</h3>
+            <table>
+                <thead>
+                    <tr><th>Column</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Year</strong></td><td>Calendar year of sample collection (from the dataset's date field).</td></tr>
+                    <tr><td><strong>Samples</strong></td><td>Number of samples collected in that year.</td></tr>
+                    <tr><td><strong>Mean similarity</strong></td><td>Average pairwise joint similarity among all samples collected in that year. Rising values over time indicate increasing homogeneity within the supply for that period.</td></tr>
+                    <tr><td><strong>Std dev</strong></td><td>Standard deviation of pairwise similarities within the year. High std dev means the cohort is internally diverse — some pairs are very similar, others very different.</td></tr>
+                    <tr><td><strong>Clusters</strong></td><td>Number of connected components (at the current threshold) formed by samples from this year alone.</td></tr>
+                    <tr><td><strong>Isolates</strong></td><td>Samples from this year that have no connection above threshold to any other same-year sample.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Cross-year similarity matrix</h3>
+            <p>
+                The cross-year table shows the mean joint similarity between every pair of years.
+                Each cell is the average similarity of all pairs where one sample is from year A
+                and the other is from year B. Diagonal cells are the within-year means.
+            </p>
+            <p>
+                A high off-diagonal value between two years indicates that the supply profile
+                in those years was chemically similar — the same adulterant or cutting-agent
+                pattern was present. A sharp drop between consecutive years can signal a
+                supply disruption or source change.
+            </p>
+
+            <h3>Substance composition chart</h3>
+            <p>
+                The stacked bar chart shows the top substances (by overall prevalence) and
+                their year-by-year prevalence. Each bar segment is the fraction of samples
+                in that year that contain the substance. This makes visible trends such as:
+            </p>
+            <ul style="padding-left:20px; margin-bottom:12px; color:#445566;">
+                <li style="margin-bottom:6px;"><strong>A cutting agent rising over time</strong> — a new adulterant entering the supply chain.</li>
+                <li style="margin-bottom:6px;"><strong>The primary substance declining</strong> — falling purity; the active substance is a smaller fraction of total composition year-on-year.</li>
+                <li style="margin-bottom:6px;"><strong>A substance appearing briefly then disappearing</strong> — a short-lived batch or supplier.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Interpreting homogeneity changes</strong>
+                Rising within-year mean similarity does not necessarily mean the supply is
+                "better." It often means samples are converging on a common profile —
+                frequently because purity is falling and adulterant mixtures are becoming
+                more uniform. Always read the composition chart alongside the similarity
+                statistics to determine whether homogeneity reflects consistent quality or
+                consistent adulteration.
+            </div>
+            <div class="info-box warning">
+                <strong>Small year cohorts</strong>
+                Years with fewer than five samples produce unreliable mean-similarity and
+                cluster statistics. The cross-year similarity will also be noisy when one
+                year has very few samples. Treat single-year or two-sample cohorts as
+                indicative only.
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    // Highlight active nav link based on scroll position
+    const sections = document.querySelectorAll('section[id], div.chem-card[id]');
+    const navLinks = document.querySelectorAll('.nav a');
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(a => a.classList.remove('active'));
+                const active = document.querySelector(`.nav a[href="#${entry.target.id}"]`);
+                if (active) active.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
